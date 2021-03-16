@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import Block from "./Block"
-
+import {IoLogoGithub,IoLogoYoutube,IoSettingsOutline,IoEyeOutline} from "react-icons/io5"
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 function App() {
 
   const [timeRn, setTimeRn] = useState(null)
@@ -11,6 +13,8 @@ function App() {
   const [pOfYear, setPOfYear] = useState(0)
   const [POfCentruy, setPOfCentruy] = useState(0)
   const [limitDecmials, setLimitDecmials] = useState(15)
+  const [settingsVisible, setSettingsVisible] = useState(false)
+  const [hideState, setHideState] = useState(true)
   useEffect(() => {
     const interval = setInterval(() => {
         let currDate = new Date()
@@ -38,29 +42,47 @@ function App() {
     }
   }, [])
 
+  
+
   return (
-    <div className="tc bg-black white">
+    <>
+    <ToastContainer />
+    <div className="white tc">
     {timeRn ? ( 
       <main className="w-80 ml-auto mr-auto mt5">
+        
         <p className="f1">{timeRn.getHours()} | {timeRn.getMinutes()}  | {timeRn.getSeconds()}</p>
-
+        <p>{timeRn.toString()}</p>
         <Block message="Minutes" number={pofMin} toFixedNum={limitDecmials} />
         <Block message="Hours" number={pOfHour} toFixedNum={limitDecmials}/>
         <Block message="Day" number={pOfDay} toFixedNum={limitDecmials}/>
         <Block message="Week" number={pOfWeek} toFixedNum={limitDecmials}/>
         <Block message="Year" number={pOfYear} toFixedNum={limitDecmials}/>
         <Block message="Century" number={POfCentruy} toFixedNum={limitDecmials}/>
-        <p className="">All we have to decide is what to do with the time that is given us. - Gandalf the Great</p>
-
-        <div className="formTypeDiv ml-auto mr-auto">
-          <div className="flex items-center ">
-            <p>Limit Decimals: </p><input defaultChecked={true} onChange={(e) => ( e.target.checked ? setLimitDecmials(15) : setLimitDecmials(2) )} type="checkbox"/>
+        <p className="red">All we have to decide is what to do with the time that is given us. - Gandalf the Great</p>
+        { settingsVisible ? 
+          <div className="formTypeDiv ml-auto w-100 tc mr-auto">
+            <div className="flex items-center w-100 ml-auto mr-auto">
+              <p  className="pr2 ml-auto">Limit Decimals: </p><input className="mr-auto" defaultChecked={false} onChange={(e) => ( e.target.checked ? setLimitDecmials(2) : setLimitDecmials(15) )} type="checkbox"/>
+            </div>
           </div>
+         : <div></div> }
+        {hideState ? 
+        <div className="ml-auto mr-auto mt5 pa3 w-auto tc">
+          <a className="pa4" href="https://github.com/aimforbigfoot/PercentOfTimeConsumed"><IoLogoGithub color="white"/></a>
+          <a className="pa4" href="https://www.youtube.com/channel/UCRs1QwQrxmgPpy604EEafWw"><IoLogoYoutube color="red" /></a>
+          <span onClick={ () => {setSettingsVisible( !settingsVisible )} } className="pa4 shadow-hover"><IoSettingsOutline /></span>
+          <span onClick={() => {
+            setHideState(false)
+            toast.error("if you want to see the icons again refresh the page")
+            }} className="pa4 shadow-hover"><IoEyeOutline /></span>
         </div>
-
+        : ""
+        }
     </main>
       ) : "Wait one second"}
     </div>
+    </>
   );
 };
 
